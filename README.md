@@ -22,3 +22,6 @@ Rewards will be in:
 - Rewards can be claimed at full maturity
 - Token holders also can unstake partial or full tokens before maturity . With the loss of some benefits.
 
+## Rewards Reference
+- https://www.stakingrewards.com
+
