@@ -1,6 +1,6 @@
 # hydro-staking
 
-In the past process to get interest on a treditional financial rails are challanging and time consuming . But, today with various DeFi applications built on ERC20 any individual can take out an interest by staking the assets in their wallet as a proxy. All with the below properties :
+In the past process to get interest on a traditional financial rails are challanging and time consuming . But, today with various DeFi applications built on ERC20 any individual can take out an interest by staking the assets in their wallet as a proxy. All with the below properties :
 
 - without having to disclose their identity to a third party
 - Faster
