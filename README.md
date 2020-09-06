@@ -25,8 +25,12 @@ Rewards will be in:
 ## Risk Involved
 -  Work In Progress
 
+## Hydro Staking Calculator
+- Work In Progress
+
 ## How to start staking
 - Work In Progress
+
 ## Rewards Reference
 - https://www.stakingrewards.com
 
