@@ -11,15 +11,13 @@ Crypto asset can be staked either in :
 - Wallet orin
 - Centralized or decentralised Crypto Exchange
 
-## Stacking Asset
+## Staking Asset
 Holders can stack their asset in:
-- Stable coins such as DAI or USDC
-- Or Native Hydro Tokens
+- Native Hydro Tokens
 
 ## Return on Investment ( Rewards)
 Rewards will be in:
-- Stable coins such as DAI or USDC
-- Or Native Hydro Tokens
+- Native Hydro Tokens
 
 ## Reward Rate Calculation 
 Rewards are calculated and are directly impacted by the below attributes :
