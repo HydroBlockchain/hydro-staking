@@ -528,7 +528,7 @@ contract HydroStaking is LPTokenWrapper, IRewardDistributionRecipient {
 
     /* Default rewards contract */
     
-    IERC20 public token = IERC20(0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8);
+    IERC20 public token = IERC20(0x4959c7f62051D6b2ed6EaeD3AAeE1F961B145F20);
     
     uint256 public constant DURATION = 7 days;
     uint256 public constant MINIMUM_STAKE = 100e18;
