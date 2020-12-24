@@ -530,7 +530,7 @@ contract HydroStaking is LPTokenWrapper, IRewardDistributionRecipient {
     
     IERC20 public token = IERC20(0x4959c7f62051D6b2ed6EaeD3AAeE1F961B145F20);
     uint constant decimal=18;
-    uint256 public constant DURATION = 7 days;
+    uint256 public constant DURATION = 90 days;
     uint256 public constant MINIMUM_STAKE = 222222*10**uint(decimal);
     uint256 public periodFinish = 0;
     uint256 public rewardRate = 0;
@@ -572,6 +572,10 @@ contract HydroStaking is LPTokenWrapper, IRewardDistributionRecipient {
             );
     }
 
+function changeRewardRate(uint256 _new) public onlyOwner returns(uint256 _newRate){
+    rewardRate=_new;
+    return _newRate;
+}
     function earned(address account) public view returns (uint256) {
         return
             balanceOf(account)
@@ -625,3 +629,11 @@ contract HydroStaking is LPTokenWrapper, IRewardDistributionRecipient {
         emit RewardAdded(reward);
     }
 }
+
+
+
+
+
+
+
+
