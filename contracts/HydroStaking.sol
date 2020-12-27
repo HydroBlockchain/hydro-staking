@@ -474,7 +474,7 @@ contract IRewardDistributionRecipient is Ownable {
     function notifyRewardAmount(uint256 reward) external;
 
     modifier onlyRewardDistribution() {
-        require(_msgSender() == rewardDistribution, "Caller is not reward distribution");
+        require(_msgSender() == rewardDistribution, "Caller is not reward distributor");
         _;
     }
 
@@ -489,11 +489,17 @@ contract IRewardDistributionRecipient is Ownable {
 contract LPTokenWrapper {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-
-    IERC20 public vote = IERC20(0x4959c7f62051D6b2ed6EaeD3AAeE1F961B145F20);
+    uint256 public tokenLockDuration=90 days;
+    IERC20 public hydro = IERC20(0xEBBdf302c940c6bfd49C6b165f457fdb324649bc);
 
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
+    mapping (address=> uint256) public canWithdrawAt;
+    
+    modifier stillLocked() {
+        require (now>= canWithdrawAt[msg.sender],' you have not staked for 90 days yet');
+        _;
+    }
 
     function totalSupply() public view returns (uint256) {
         return _totalSupply;
@@ -503,16 +509,21 @@ contract LPTokenWrapper {
         return _balances[account];
     }
 
+//allow stakers to check the remaining tme for them to exit/withdraw their staked tokens
+function checkRemainingDaysToWithdraw() public view returns(uint){
+   return canWithdrawAt[msg.sender];
+}
     function stake(uint256 amount) public {
         _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
-        vote.safeTransferFrom(msg.sender, address(this), amount);
+        hydro.safeTransferFrom(msg.sender, address(this), amount);
+        canWithdrawAt[msg.sender]=now+tokenLockDuration;
     }
 
-    function withdraw(uint256 amount) public {
+    function withdraw(uint256 amount) public stillLocked {
         _totalSupply = _totalSupply.sub(amount);
         _balances[msg.sender] = _balances[msg.sender].sub(amount);
-        vote.safeTransfer(msg.sender, amount);
+        hydro.safeTransfer(msg.sender, amount);
     }
 }
 
@@ -528,14 +539,17 @@ contract HydroStaking is LPTokenWrapper, IRewardDistributionRecipient {
 
     /* Default rewards contract */
     
-    IERC20 public token = IERC20(0x4959c7f62051D6b2ed6EaeD3AAeE1F961B145F20);
+    IERC20 public token = IERC20(0xEBBdf302c940c6bfd49C6b165f457fdb324649bc);
     uint constant decimal=18;
     uint256 public constant DURATION = 90 days;
     uint256 public constant MINIMUM_STAKE = 222222*10**uint(decimal);
     uint256 public periodFinish = 0;
     uint256 public rewardRate = 0;
+    uint256 private safeDays=7 days;
+    uint256 public stillAvailable;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
+    uint256 public adminTokens;
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;
 
@@ -551,6 +565,11 @@ contract HydroStaking is LPTokenWrapper, IRewardDistributionRecipient {
             rewards[account] = earned(account);
             userRewardPerTokenPaid[account] = rewardPerTokenStored;
         }
+        _;
+    }
+    
+    modifier safeDaysNotPassed() {
+        require(now<=stillAvailable);
         _;
     }
 
@@ -585,13 +604,13 @@ function changeRewardRate(uint256 _new) public onlyOwner returns(uint256 _newRat
     }
 
     // stake visibility is public as overriding LPTokenWrapper's stake() function
-    function stake(uint256 amount) public updateReward(msg.sender) {
+    function stake(uint256 amount) public updateReward(msg.sender)  {
         require(amount >= MINIMUM_STAKE, "Cannot stake less than MINIMUM_STAKE");
         super.stake(amount);
         emit Staked(msg.sender, amount);
     }
 
-    function withdraw(uint256 amount) public updateReward(msg.sender) {
+    function withdraw(uint256 amount) public updateReward(msg.sender) stillLocked {
         require(amount > 0, "Cannot withdraw 0");
         super.withdraw(amount);
         emit Withdrawn(msg.sender, amount);
@@ -600,6 +619,7 @@ function changeRewardRate(uint256 _new) public onlyOwner returns(uint256 _newRat
     function exit() external {
         withdraw(balanceOf(msg.sender));
         getReward();
+        adminTokens.sub(earned(msg.sender));
     }
 
     function getReward() public updateReward(msg.sender) {
@@ -607,10 +627,27 @@ function changeRewardRate(uint256 _new) public onlyOwner returns(uint256 _newRat
         if (reward > 0) {
             rewards[msg.sender] = 0;
             token.safeTransfer(msg.sender, reward);
+            adminTokens.sub(reward);
             emit RewardPaid(msg.sender, reward);
         }
     }
 
+//allows current admin to remove the remaining tokens within 7 days in case of emergencies
+//also sets the rewardRate,adminTokens and other core parameters to 0
+function removeTokenEmergencies() public onlyOwner safeDaysNotPassed {
+    token.safeTransfer(msg.sender,adminTokens);
+    reset();
+    
+}
+
+function reset() internal {
+    adminTokens=0;
+    rewardRate=0;
+    lastUpdateTime=0;
+    periodFinish=0;
+}
+
+//allows the rewardDistributor to provide token rewards thereby seting the reward rate
     function notifyRewardAmount(uint256 reward)
         external
         onlyRewardDistribution
@@ -626,12 +663,19 @@ function changeRewardRate(uint256 _new) public onlyOwner returns(uint256 _newRat
         }
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp.add(DURATION);
+        
+        //safeDays in which admin can remove funds he provided in case *anything* goes wrong
+     stillAvailable=now+safeDays;
+     adminTokens=reward;
+        
         emit RewardAdded(reward);
     }
+    
+    //function to check remaining pooled tokens up for grabs
+    function checkPool() public view onlyOwner returns(uint256){
+        return adminTokens;
+    }
 }
-
-
-
 
 
 
