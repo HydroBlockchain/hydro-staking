@@ -8,11 +8,11 @@ In the past process to get interest on a treditional financial rails are challan
 
 ## Asset Custodian
 Crypto asset can be staked either in :
-- Wallet orin
-- Centralized or decentralised Crypto Exchange
+- ÆGIR Web Wallet
+- ÆGIR Mobile Wallet
 
 ## Staking Asset
-Holders can stack their asset in:
+Holders can stake their asset in:
 - Native Hydro Tokens
 
 ## Return on Investment ( Rewards)
@@ -21,24 +21,30 @@ Rewards will be in:
 
 ## Reward Rate Calculation 
 Rewards are calculated and are directly impacted by the below attributes :
-- Number of tokens
-- Duration for which the tokens are held
-- 
+- Annualized yield of 7%-12% depending on number of stakers and amount of total staked tokens
+
 ## Hydro Tokeconomics
-- Total supply for Stacking : 10 Million Hydro Tokens
-- Lock period : 7 days lock-up with an annualized yield of 7%
-- Rewards can be claimed at full maturity
-- Token holders also can unstake partial or full tokens before maturity . With the loss of some benefits.
+- Total supply for Stacking : -----
+- Lock period : 90 days lock-up with an annualized yield of 7%-12% depending on number of stakers and amount of total staked tokens
+- Rewards can be claimed daily
+- Token holders can not unstake partial or full tokens before maturity .
 
 ## Risk Involved
 -  Work In Progress
+
 ## Staking Restrictions
-- Once the assets are staked for a certain duration,for that duration investor can't unstake them. 
-## Hydro Staking Calculator
-- Work In Progress
+- Once the assets are staked for a certain duration,for that duration investor can't unstake them.
+- Minimum amount of 222,222 Hydro required to stake.
 
 ## How to start staking
-- Work In Progress
+- Open ÆGIR Web Wallet.
+- Navigate to the Staking tab.
+- For Staking, use the 1st section from the Staking tab.
+- Enter the number of Hydro tokens you want to stake [Note: Minimum amount of 222,222 Hydro required to stake].
+- Click on the “Stake” button.
+- Confirm the transaction from the MetaMask popup.
+- Wait for the transaction to get successfully approved.
+- Check your staked Hydro tokens under the Overview tab.
 
 ## Rewards Reference
 - https://www.stakingrewards.com
